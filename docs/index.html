@@ -16,42 +16,42 @@
 
       // move_01: 基本的な移動アニメーション
       function initMove01() {
-        const container = document.getElementById("move_01");
+        const container = document.querySelector("#move_01");
         const dot1 = container.querySelector(".dot:nth-child(1)");
         const dot2 = container.querySelector(".dot:nth-child(2)");
 
         // 座標定義
-        const positionFrom = { x: 100, y: 50 };
-        const positionTo = { x: 520, y: 200 };
+        const positionFrom = { x: 100, y: 75 };
+        const positionTo = { x: 600, y: 250 };
 
         // 初期位置
         utils.set([dot1, dot2], positionFrom);
 
         // アニメーション1: 同じイージング
-        animate(dot1, {
+        const a1 = animate(dot1, {
           x: positionTo.x,
           y: positionTo.y,
           duration: 1000,
           ease: "inOutQuart",
-          loop: true,
         });
 
-        animate(dot2, {
+        const a2 = animate(dot2, {
           x: { to: positionTo.x, duration: 1000, ease: "inOutQuart" },
           y: { to: positionTo.y, duration: 1000, ease: "outBack" },
-          loop: true,
         });
+
+        createTimeline({ loop: true, loopDelay: 500 }).sync(a1, 0).sync(a2, 0);
       }
 
       // move_02: スケール付き移動アニメーション
       function initMove02() {
-        const container = document.getElementById("move_02");
+        const container = document.querySelector("#move_02");
         const dot1 = container.querySelector(".dot:nth-child(1)");
         const dot2 = container.querySelector(".dot:nth-child(2)");
 
         // 座標定義
-        const positionFrom = { x: 0, y: 0 };
-        const positionTo = { x: 260, y: 150 };
+        const positionFrom = { x: 50, y: 50 };
+        const positionTo = { x: 500, y: 200 };
         const scaleFromValue = 0.1;
         const scaleToValue = 1;
 
@@ -60,240 +60,207 @@
         utils.set([dot1, dot2], { scale: scaleFromValue });
 
         // アニメーション1: 同じイージング
-        animate(dot1, {
+        const a1 = animate(dot1, {
           x: positionTo.x,
           y: positionTo.y,
           scale: scaleToValue,
-          duration: 1000,
+          duration: 1500,
           ease: "inOutQuart",
-          loop: true,
         });
 
         // アニメーション2: X座標
-        animate(dot2, {
-          x: { to: positionTo.x, duration: 1000, ease: "inOutQuart" },
-          y: { to: positionTo.y, duration: 1000, ease: "outBack" },
-          scale: { to: scaleToValue, duration: 1000, ease: "inOutQuart" },
-          loop: true,
+        const a2 = animate(dot2, {
+          x: { to: positionTo.x, duration: 1500, ease: "inOutQuart" },
+          y: { to: positionTo.y, duration: 1500, ease: "outBack" },
+          scale: { to: scaleToValue, duration: 1500, ease: "inOutQuart" },
         });
+
+        createTimeline({ loop: true, loopDelay: 500 }).sync(a1, 0).sync(a2, 0);
       }
 
       // move_03: リニア移動アニメーション
       function initMove03() {
-        const container = document.getElementById("move_03");
+        const container = document.querySelector("#move_03");
         const dot1 = container.querySelector(".dot:nth-child(1)");
         const dot2 = container.querySelector(".dot:nth-child(2)");
 
         // 座標定義
-        const positionFrom = { x: 0, y: 0 };
-        const positionTo = { x: 520, y: 200 };
+        const positionFrom = { x: 100, y: 100 };
+        const positionTo = { x: 600, y: 250 };
+
+        // 初期位置
+        utils.set([dot1, dot2], positionFrom);
+
         // アニメーション1: 同じイージング
-        animate(dot1, {
-          opacity: [0.3, 1],
-          x: [positionFrom.x, positionTo.x],
-          y: [positionFrom.y, positionTo.y],
-          duration: 1000,
+        const a1 = animate(dot1, {
+          x: positionTo.x,
+          y: positionTo.y,
+          duration: 1500,
           ease: "inOutQuart",
-          loop: true,
         });
 
-        // アニメーション2: X座標
-        const tl = createTimeline({ loop: true });
-        tl.add(
-          dot2,
-          {
-            x: [positionFrom.x, positionTo.x],
-            duration: 1000,
-            ease: "inOutQuart",
-          },
-          0
-        );
+        // アニメーション2: 異なるイージング
+        const a2 = animate(dot2, {
+          x: { to: positionTo.x, duration: 1500, ease: "inOutQuart" },
+          y: { to: positionTo.y, duration: 1500, ease: "linear" },
+        });
 
-        // アニメーション2: Y座標（linear）
-        tl.add(
-          dot2,
-          {
-            y: [positionFrom.y, positionTo.y],
-            duration: 1000,
-            ease: "linear",
-          },
-          0
-        );
-
-        tl.loop = true;
+        createTimeline({ loop: true, loopDelay: 250 }).sync(a1, 0).sync(a2, 0);
       }
 
       // expand: 伸縮アニメーション
       function initExpand() {
-        const container = document.getElementById("expand");
+        const container = document.querySelector("#expand");
         const dot1 = container.querySelector(".dot:nth-child(1)");
         const dot2 = container.querySelector(".dot:nth-child(2)");
 
         // 座標定義（開始点と終了点が同じ）
-        const position1 = { x: 175, y: 150 };
-        const position2 = { x: 450, y: 150 };
+        const position1 = { x: 200, y: 200 };
+        const position2 = { x: 500, y: 200 };
         const scaleFromValue = 0.3;
         const scaleToValue = 1;
 
         // 初期位置とスケールを設定
-        dot1.style.left = position1.x + "px";
-        dot1.style.top = position1.y + "px";
-        dot1.style.transform = "scale(0.3)";
-        dot2.style.left = position2.x + "px";
-        dot2.style.top = position2.y + "px";
-        dot2.style.transform = "scale(0.3)";
-
-        // アニメーション1: 同時に再生
-        animate(dot1, {
-          scale: [scaleFromValue, scaleToValue],
-          duration: 1000,
-          ease: "outElastic",
-          loop: true,
+        utils.set(dot1, {
+          ...position1,
+          scaleX: scaleFromValue,
+          scaleY: scaleFromValue,
+        });
+        utils.set(dot2, {
+          ...position2,
+          scaleX: scaleFromValue,
+          scaleY: scaleFromValue,
         });
 
-        // アニメーション2: X方向のスケール
-        const tl = createTimeline({ loop: true });
-        tl.add(
-          dot2,
-          {
-            scaleX: [scaleFromValue, scaleToValue],
-            duration: 1000,
-            ease: "outElastic",
-          },
-          0
-        );
+        // アニメーション1: 同時に再生
+        const a1 = animate(dot1, {
+          scaleX: scaleToValue,
+          scaleY: scaleToValue,
+          duration: 1500,
+          ease: "outElastic",
+        });
 
-        // アニメーション2: Y方向のスケール（0.1秒ずらし）
-        tl.add(
-          dot2,
-          {
-            scaleY: [scaleFromValue, scaleToValue],
-            duration: 1000,
+        // アニメーション2: タイミングをずらしたスケール
+        const a2 = animate(dot2, {
+          scaleX: { to: scaleToValue, duration: 1500, ease: "outElastic" },
+          scaleY: {
+            to: scaleToValue,
+            duration: 1500,
             ease: "outElastic",
+            delay: 100,
           },
-          100
-        );
+        });
 
-        tl.loop = true;
+        createTimeline({ loop: true, loopDelay: 500 }).sync(a1, 0).sync(a2, 0);
       }
 
       // rotate: 回転アニメーション
       function initRotate() {
-        const container = document.getElementById("rotate");
+        const container = document.querySelector("#rotate");
         const dot1 = container.querySelector(".dot:nth-child(1)");
         const dot2 = container.querySelector(".dot:nth-child(2)");
 
         // 座標定義
-        const positionFrom1 = { x: 75, y: 125 };
-        const positionTo1 = { x: 545, y: 125 };
-        const positionFrom2 = { x: 75, y: 275 };
-        const positionTo2 = { x: 545, y: 275 };
+        const positionFrom1 = { x: 100, y: 125 };
+        const positionTo1 = { x: 600, y: 125 };
+        const positionFrom2 = { x: 100, y: 275 };
+        const positionTo2 = { x: 600, y: 275 };
 
         // 初期位置を設定
-        dot1.style.left = positionFrom1.x + "px";
-        dot1.style.top = positionFrom1.y + "px";
-        dot2.style.left = positionFrom2.x + "px";
-        dot2.style.top = positionFrom2.y + "px";
-        dot2.style.transformOrigin = "center";
+        utils.set(dot1, positionFrom1);
+        utils.set(dot2, positionFrom2);
 
         // アニメーション1: 横移動のみ
-        animate(dot1, {
-          x: [positionFrom1.x, positionTo1.x],
-          duration: 600,
-          ease: "inOutCirc",
-          loop: true,
+        const a1 = animate(dot1, {
+          x: positionTo1.x,
+          duration: 1000,
+          ease: "inOutExpo",
         });
 
         // アニメーション2: 横移動
-        const tl = createTimeline({ loop: true });
-        tl.add(dot2, {
+        const a2 = animate(dot2, {
           x: {
             to: positionTo2.x,
-            duration: 600,
-            ease: "inOutCirc",
+            duration: 1000,
+            ease: "inOutExpo",
+            delay: 300,
           },
           rotate: [
             { to: 0 },
-            { to: "-30deg", duration: 400, easing: "outCirc" },
-            { to: "10deg", duration: 600, easing: "inOutCirc" },
-            { to: 0, duration: 300, easing: "outBack" },
+            { to: -80, duration: 400, easing: "outExpo" },
+            { to: 30, duration: 400, easing: "inExpo" },
+            { to: 0, duration: 600, easing: "outBack" },
           ],
         });
+        createTimeline({ loop: true, loopDelay: 500 })
+          .sync(a2, 0)
+          .sync(a1, 300);
       }
 
       // drop: 落下アニメーション
       function initDrop() {
-        const container = document.getElementById("drop");
+        const container = document.querySelector("#drop");
         const dot1 = container.querySelector(".dot:nth-child(1)");
         const dot2 = container.querySelector(".dot:nth-child(2)");
 
         // 座標定義
-        const positionFrom1 = { x: 170, y: -100 };
-        const positionTo1 = { x: 170, y: 300 };
-        const positionFrom2 = { x: 420, y: -100 };
-        const positionTo2 = { x: 420, y: 300 };
+        const positionFrom1 = { x: 220, y: -100 };
+        const positionTo1 = { y: 275 };
+        const positionFrom2 = { x: 500, y: -100 };
+        const positionTo2 = { y: 275 };
         const scaleFrom = { x: 0.2, y: 2 };
         const scaleTo = { x: 1, y: 1 };
 
         // 初期位置を設定
-        dot1.style.left = positionFrom1.x + "px";
-        dot1.style.top = positionFrom1.y + "px";
-        dot2.style.left = positionFrom2.x + "px";
-        dot2.style.top = positionFrom2.y + "px";
+        utils.set(dot1, positionFrom1);
+        utils.set(dot2, {
+          ...positionFrom2,
+          scaleX: scaleFrom.x,
+          scaleY: scaleFrom.y,
+        });
         dot2.style.transformOrigin = "center 100%";
 
         // アニメーション1: 落ちて跳ねる動きのみ
-        animate(
-          dot1,
-          {
-            y: [positionFrom1.y, positionTo1.y],
-            duration: 1000,
-            ease: "outBounce",
-            loop: true,
-          },
-          500
-        );
+        const a1 = animate(dot1, {
+          y: positionTo1.y,
+          duration: 1500,
+          ease: "outBounce",
+        });
 
-        const tl = createTimeline({ loop: true });
-        // アニメーション2: 落ちて跳ねる動き
-        tl.add(
-          dot2,
-          {
-            y: [positionFrom2.y, positionTo2.y],
-            duration: 1000,
-            ease: "outBounce",
-          },
-          0
-        );
-
-        // アニメーション2: 伸縮の動き
-        tl.add(
-          dot2,
-          {
-            scaleX: [scaleFrom.x, scaleTo.x],
-            scaleY: [scaleFrom.y, scaleTo.y],
-            duration: 300,
+        // アニメーション2: 複合アニメーション（timelineが必要）
+        const a2 = animate(dot2, {
+          y: { to: positionTo2.y, duration: 1500, ease: "outBounce" },
+          scaleX: {
+            to: scaleTo.x,
+            duration: 450,
             ease: "outBack(4)",
+            delay: 450,
           },
-          300
-        );
+          scaleY: {
+            to: scaleTo.y,
+            duration: 450,
+            ease: "outBack(4)",
+            delay: 450,
+          },
+        });
 
-        tl.loop = true;
+        createTimeline({ loop: true, loopDelay: 500 }).sync(a1, 0).sync(a2, 0);
       }
 
       // 初期化
       document.addEventListener("DOMContentLoaded", () => {
         // ハッシュで表示を切り替える
-        let demoContainer;
         const hash = location.hash;
 
         if (hash.length) {
-          demoContainer = document.getElementById(hash.substr(1, hash.length));
+          const demoContainer = document.getElementById(
+            hash.substr(1, hash.length)
+          );
           demoContainer.hidden = false;
         } else {
-          const containers = document.getElementsByClassName("demo-container");
-          for (demoContainer of containers) {
-            demoContainer.hidden = false;
+          const containers = document.querySelectorAll(".demo-container");
+          for (const element of containers) {
+            element.hidden = false;
           }
         }
 
@@ -311,14 +278,17 @@
       <div id="move_01" class="demo-container" hidden>
         <div class="dot dot-100 ghost"></div>
         <div class="dot dot-100"></div>
+        <p>水平と垂直の移動を、異なるイージングにして凝った感を</p>
       </div>
       <div id="move_02" class="demo-container" hidden>
         <div class="dot dot-200 ghost"></div>
         <div class="dot dot-200"></div>
+        <p>垂直移動を異なるイージングにして、奥行き感をだす</p>
       </div>
       <div id="move_03" class="demo-container" hidden>
         <div class="dot dot-100 ghost"></div>
         <div class="dot dot-100"></div>
+        <p>垂直移動を異なるイージングにして、ジグザグの動きに</p>
       </div>
       <div id="expand" class="demo-container" hidden>
         <div class="dot dot-200"></div>
