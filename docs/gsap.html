@@ -1,0 +1,310 @@
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=960, initial-scale=1.0" />
+    <title>ズルいトゥイーンアニメーション</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/index.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import { gsap } from "gsap";
+
+      // move_01: 基本的な移動アニメーション
+      function initMove01() {
+        const container = document.querySelector("#move_01");
+        const dot1 = container.querySelector(".dot:nth-child(1)");
+        const dot2 = container.querySelector(".dot:nth-child(2)");
+
+        // 座標定義
+        const positionFrom = { x: 100, y: 75 };
+        const positionTo = { x: 600, y: 250 };
+
+        // 初期位置
+        gsap.set([dot1, dot2], positionFrom);
+
+        // a1: dot1 のモーション
+        const a1 = gsap.to(dot1, {
+          x: positionTo.x,
+          y: positionTo.y,
+          duration: 1,
+          ease: "power4.inOut",
+        });
+
+        // a2: dot2 のモーション（x と y を別のイージングで同時開始）
+        const a2 = gsap.timeline();
+        a2.to(dot2, { x: positionTo.x, duration: 1, ease: "power4.inOut" }, 0);
+        a2.to(dot2, { y: positionTo.y, duration: 1, ease: "back.out" }, 0);
+
+        const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+        tl.add(a1, 0).add(a2, 0);
+      }
+
+      // move_02: スケール付き移動アニメーション
+      function initMove02() {
+        const container = document.querySelector("#move_02");
+        const dot1 = container.querySelector(".dot:nth-child(1)");
+        const dot2 = container.querySelector(".dot:nth-child(2)");
+
+        // 座標定義
+        const positionFrom = { x: 50, y: 50 };
+        const positionTo = { x: 500, y: 200 };
+        const scaleFromValue = 0.1;
+        const scaleToValue = 1;
+
+        // 初期位置
+        gsap.set([dot1, dot2], positionFrom);
+        gsap.set([dot1, dot2], { scale: scaleFromValue });
+
+        // a1: dot1（x, y, scale を同時に）
+        const a1 = gsap.to(dot1, {
+          x: positionTo.x,
+          y: positionTo.y,
+          scale: scaleToValue,
+          duration: 1.5,
+          ease: "power4.inOut",
+        });
+
+        // a2: dot2（x は inOutQuart 相当、y は outBack、scale は inOutQuart 相当）
+        const a2 = gsap.timeline();
+        a2.to(
+          dot2,
+          { x: positionTo.x, duration: 1.5, ease: "power4.inOut" },
+          0
+        );
+        a2.to(dot2, { y: positionTo.y, duration: 1.5, ease: "back.out" }, 0);
+        a2.to(
+          dot2,
+          { scale: scaleToValue, duration: 1.5, ease: "power4.inOut" },
+          0
+        );
+
+        const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+        tl.add(a1, 0).add(a2, 0);
+      }
+
+      // move_03: リニア移動アニメーション
+      function initMove03() {
+        const container = document.querySelector("#move_03");
+        const dot1 = container.querySelector(".dot:nth-child(1)");
+        const dot2 = container.querySelector(".dot:nth-child(2)");
+
+        // 座標定義
+        const positionFrom = { x: 100, y: 100 };
+        const positionTo = { x: 600, y: 250 };
+
+        // 初期位置
+        gsap.set([dot1, dot2], positionFrom);
+
+        const a1 = gsap.to(dot1, {
+          x: positionTo.x,
+          y: positionTo.y,
+          duration: 1.5,
+          ease: "power4.inOut",
+        });
+
+        const a2 = gsap.timeline();
+        a2.to(
+          dot2,
+          { x: positionTo.x, duration: 1.5, ease: "power4.inOut" },
+          0
+        );
+        a2.to(dot2, { y: positionTo.y, duration: 1.5, ease: "none" }, 0);
+
+        const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.25 });
+        tl.add(a1, 0).add(a2, 0);
+      }
+
+      // expand: 伸縮アニメーション
+      function initExpand() {
+        const container = document.querySelector("#expand");
+        const dot1 = container.querySelector(".dot:nth-child(1)");
+        const dot2 = container.querySelector(".dot:nth-child(2)");
+
+        // 座標定義（開始点と終了点が同じ）
+        const position1 = { x: 200, y: 200 };
+        const position2 = { x: 500, y: 200 };
+        const scaleFromValue = 0.3;
+        const scaleToValue = 1;
+
+        // 初期位置とスケールを設定
+        gsap.set(dot1, {
+          ...position1,
+          scaleX: scaleFromValue,
+          scaleY: scaleFromValue,
+        });
+        gsap.set(dot2, {
+          ...position2,
+          scaleX: scaleFromValue,
+          scaleY: scaleFromValue,
+        });
+
+        const a1 = gsap.to(dot1, {
+          scaleX: scaleToValue,
+          scaleY: scaleToValue,
+          duration: 1.5,
+          ease: "elastic.out",
+        });
+
+        const a2 = gsap.timeline();
+        a2.to(
+          dot2,
+          { scaleX: scaleToValue, duration: 1.5, ease: "elastic.out" },
+          0
+        );
+        a2.to(
+          dot2,
+          { scaleY: scaleToValue, duration: 1.5, ease: "elastic.out" },
+          0.1
+        );
+
+        const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+        tl.add(a1, 0).add(a2, 0);
+      }
+
+      // rotate: 回転アニメーション
+      function initRotate() {
+        const container = document.querySelector("#rotate");
+        const dot1 = container.querySelector(".dot:nth-child(1)");
+        const dot2 = container.querySelector(".dot:nth-child(2)");
+
+        // 座標定義
+        const positionFrom1 = { x: 100, y: 125 };
+        const positionTo1 = { x: 600, y: 125 };
+        const positionFrom2 = { x: 100, y: 275 };
+        const positionTo2 = { x: 600, y: 275 };
+
+        // 初期位置を設定
+        gsap.set(dot1, positionFrom1);
+        gsap.set(dot2, positionFrom2);
+
+        const a1 = gsap.to(dot1, {
+          x: positionTo1.x,
+          duration: 1,
+          ease: "expo.inOut",
+        });
+
+        const a2 = gsap.timeline();
+        a2.to(dot2, { rotation: 0, duration: 0 }, 0);
+        a2.to(dot2, { rotation: -80, duration: 0.4, ease: "expo.out" }, 0);
+        a2.to(dot2, { rotation: 30, duration: 0.4, ease: "expo.in" }, 0.4);
+        a2.to(dot2, { rotation: 0, duration: 0.6, ease: "back.out" }, 0.8);
+        a2.to(dot2, { x: positionTo2.x, duration: 1, ease: "expo.inOut" }, 0.3);
+
+        const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+        tl.add(a2, 0).add(a1, 0.3);
+      }
+
+      // drop: 落下アニメーション
+      function initDrop() {
+        const container = document.querySelector("#drop");
+        const dot1 = container.querySelector(".dot:nth-child(1)");
+        const dot2 = container.querySelector(".dot:nth-child(2)");
+
+        // 座標定義
+        const positionFrom1 = { x: 220, y: -100 };
+        const positionTo1 = { y: 275 };
+        const positionFrom2 = { x: 500, y: -100 };
+        const positionTo2 = { y: 275 };
+        const scaleFrom = { x: 0.2, y: 2 };
+        const scaleTo = { x: 1, y: 1 };
+
+        // 初期位置を設定
+        gsap.set(dot1, positionFrom1);
+        gsap.set(dot2, {
+          ...positionFrom2,
+          scaleX: scaleFrom.x,
+          scaleY: scaleFrom.y,
+        });
+        dot2.style.transformOrigin = "center 100%";
+
+        const a1 = gsap.to(dot1, {
+          y: positionTo1.y,
+          duration: 1.5,
+          ease: "bounce.out",
+        });
+
+        const a2 = gsap.timeline();
+        a2.to(dot2, { y: positionTo2.y, duration: 1.5, ease: "bounce.out" }, 0);
+        a2.to(
+          dot2,
+          { scaleX: scaleTo.x, duration: 0.45, ease: "back.out(4)" },
+          0.45
+        );
+        a2.to(
+          dot2,
+          { scaleY: scaleTo.y, duration: 0.45, ease: "back.out(4)" },
+          0.45
+        );
+
+        const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+        tl.add(a1, 0).add(a2, 0);
+      }
+
+      // 初期化
+      document.addEventListener("DOMContentLoaded", () => {
+        // ハッシュで表示を切り替える
+        const hash = location.hash;
+
+        if (hash.length) {
+          const demoContainer = document.getElementById(
+            hash.substr(1, hash.length)
+          );
+          demoContainer.hidden = false;
+        } else {
+          const containers = document.querySelectorAll(".demo-container");
+          for (const element of containers) {
+            element.hidden = false;
+          }
+        }
+
+        initMove01();
+        initMove02();
+        initMove03();
+        initExpand();
+        initRotate();
+        initDrop();
+      });
+    </script>
+  </head>
+  <body>
+    <div id="root">
+      <div id="move_01" class="demo-container" hidden>
+        <div class="dot dot-100 ghost"></div>
+        <div class="dot dot-100"></div>
+        <p>水平と垂直の移動を、異なるイージングにして凝った感を</p>
+      </div>
+      <div id="move_02" class="demo-container" hidden>
+        <div class="dot dot-200 ghost"></div>
+        <div class="dot dot-200"></div>
+        <p>垂直移動を異なるイージングにして、奥行き感をだす</p>
+      </div>
+      <div id="move_03" class="demo-container" hidden>
+        <div class="dot dot-100 ghost"></div>
+        <div class="dot dot-100"></div>
+        <p>垂直移動を異なるイージングにして、ジグザグの動きに</p>
+      </div>
+      <div id="expand" class="demo-container" hidden>
+        <div class="dot dot-200"></div>
+        <div class="dot dot-200"></div>
+        <p>拡大時に、垂直と水平のタイミングをずらす</p>
+      </div>
+      <div id="rotate" class="demo-container" hidden>
+        <div class="dot dot-100 rotate"></div>
+        <div class="dot dot-100 rotate"></div>
+        <p>横移動に、回転の動作を加える</p>
+      </div>
+      <div id="drop" class="demo-container" hidden>
+        <div class="dot dot-100"></div>
+        <div class="dot dot-100"></div>
+        <p>落ちて跳ねるときに、伸縮の動作を加える</p>
+      </div>
+    </div>
+
+    <script></script>
+  </body>
+</html>
