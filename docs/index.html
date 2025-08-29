@@ -1,8 +1,8 @@
 <html>
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  
+  <meta name="viewport" content="width=960, initial-scale=1.0"/>
+
   <title>ズルいトゥイーンアニメーション</title>
   <style>
     * {
@@ -10,12 +10,16 @@
       padding: 0;
     }
     body {
-      font-size:62.5%;
+      font-family: sans-serif;
     }
-    canvas {
+    .demo-container {
       margin: 50px 0;
       background-color: #fbf9eb;
       display: none;
+      position: relative;
+      width: 720px;
+      height: 405px;
+      overflow: hidden;
     }
     #root {
       margin: auto;
@@ -25,241 +29,414 @@
     .visible {
       display: block;
     }
+    .dot {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #ff6b6b;
+      transform-origin: 50% 50%;
+    }
+    .dot-200 {
+      width: 200px;
+      height: 200px;
+    }
+    .dot-400 {
+      width: 400px;
+      height: 400px;
+    }
   </style>
-  <script type="text/javascript" src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "animejs": "https://cdn.jsdelivr.net/npm/animejs@4.1.3/+esm"
+      }
+    }
+  </script>
+  <script type="module">
+    import {animate, createTimeline} from "animejs";
+
+    // move_01: 基本的な移動アニメーション
+    function initMove01() {
+      const container = document.getElementById('move_01');
+
+      // ドット1: 同じイージングで変化
+      const dot1 = document.createElement('div');
+      dot1.className = 'dot dot-100';
+      dot1.style.left = '50px';
+      dot1.style.top = '50px';
+      dot1.style.opacity = '0.3';
+      container.appendChild(dot1);
+
+      // ドット2: Y座標だけイージングをbackOutに変更
+      const dot2 = document.createElement('div');
+      dot2.className = 'dot dot-100';
+      dot2.style.left = '50px';
+      dot2.style.top = '50px';
+      dot2.style.opacity = '0.3';
+      container.appendChild(dot2);
+
+      // アニメーション1: 同じイージング（元の動作を忠実に再現）
+      // createjs.Tween.get(mt1, {loop: true}).wait(500).to({x: 520, y: 200}, 1000, createjs.Ease.quartInOut).wait(500);
+      animate(dot1, {
+        x: [0, 520],
+        y: [0, 200],
+        opacity: [0.3, 1],
+        duration: 1000,
+        ease: 'inOutQuart',
+        delay: 500,
+        loop: true,
+      });
+
+      // アニメーション2: X座標とY座標を別々に制御（元の動作を忠実に再現）
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({x: 520}, 1000, createjs.Ease.quartInOut).wait(500);
+      animate(dot2, {
+        x: [0, 520],
+        duration: 1000,
+        ease: 'inOutQuart',
+        delay: 500,
+        loop: true,
+      });
+
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({y: 200}, 1000, createjs.Ease.backOut).wait(500);
+      animate(dot2, {
+        y: [0, 200],
+        duration: 1000,
+        ease: 'outBack',
+        delay: 500,
+        loop: true,
+
+      });
+    }
+
+    // move_02: スケール付き移動アニメーション
+    function initMove02() {
+      const container = document.getElementById('move_02');
+
+      // ドット1: 同じイージングで変化
+      const mt1 = document.createElement('div');
+      mt1.className = 'dot dot-400';
+      mt1.style.left = '20px';
+      mt1.style.top = '20px';
+      mt1.style.opacity = '0.3';
+      mt1.style.transform = 'scale(0.1)';
+      mt1.style.transformOrigin = 'center';
+      container.appendChild(mt1);
+
+      // ドット2: 拡大のトゥイーンを追加
+      const mt2 = document.createElement('div');
+      mt2.className = 'dot dot-400';
+      mt2.style.left = '0px';
+      mt2.style.top = '0px';
+      mt2.style.transform = 'scale(0.1)';
+      mt2.style.transformOrigin = 'center';
+      container.appendChild(mt2);
+
+      // アニメーション1: 同じイージング（元の動作を忠実に再現）
+      // createjs.Tween.get(mt1, {loop: true}).wait(500).to({x: 310, y: 150, scaleX: 1, scaleY: 1}, 1000, createjs.Ease.quartInOut).wait(500);
+      animate(mt1, {
+        x: [0, 260],
+        y: [0, 150],
+        scale: [0.1, 1],
+        duration: 1000,
+        ease: 'inOutQuart',
+        delay: 500,
+        loop: true,
+
+      });
+
+      // アニメーション2: X座標
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({x: 310}, 1000, createjs.Ease.quartInOut).wait(500);
+      animate(mt2, {
+        x: [0, 260],
+        duration: 1000,
+        ease: 'inOutQuart',
+        delay: 500,
+        loop: true,
+
+      });
+
+      // アニメーション2: Y座標（backOut）
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({y: 150}, 1000, createjs.Ease.backOut).wait(500);
+      animate(mt2, {
+        y: [0, 150],
+        duration: 1000,
+        ease: 'outBack',
+        delay: 500,
+        loop: true,
+
+      });
+
+      // アニメーション2: スケール
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({scaleX: 1, scaleY: 1}, 1000, createjs.Ease.quartInOut).wait(500);
+      animate(mt2, {
+        scale: [0.1, 1],
+        duration: 1000,
+        ease: 'inOutQuart',
+        delay: 500,
+        loop: true,
+
+      });
+    }
+
+    // move_03: リニア移動アニメーション
+    function initMove03() {
+      const container = document.getElementById('move_03');
+
+      // ドット1: 同じイージングで変化
+      const mt1 = document.createElement('div');
+      mt1.className = 'dot dot-100';
+      mt1.style.left = '50px';
+      mt1.style.top = '50px';
+      mt1.style.opacity = '0.3';
+      container.appendChild(mt1);
+
+      // ドット2: Y座標だけイージングをlinearに変更
+      const mt2 = document.createElement('div');
+      mt2.className = 'dot dot-100';
+      mt2.style.left = '50px';
+      mt2.style.top = '50px';
+      mt2.style.opacity = '0.3';
+      container.appendChild(mt2);
+
+      // アニメーション1: 同じイージング（元の動作を忠実に再現）
+      // createjs.Tween.get(mt1, {loop: true}).wait(500).to({x: 520, y: 200}, 1000, createjs.Ease.quartInOut).wait(500);
+      animate(mt1, {
+        opacity: [0.3, 1],
+        x: [0, 520],
+        y: [0, 200],
+        duration: 1000,
+        ease: 'inOutQuart',
+        delay: 500,
+        loop: true,
+
+      });
+
+      // アニメーション2: X座標
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({x: 520}, 1000, createjs.Ease.quartInOut).wait(500);
+      animate(mt2, {
+        x: [0, 520],
+        duration: 1000,
+        ease: 'inOutQuart',
+        delay: 500,
+        loop: true,
+
+      });
+
+      // アニメーション2: Y座標（linear）
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({y: 200}, 1000, createjs.Ease.linear).wait(500);
+      animate(mt2, {
+        y: [0, 200],
+        duration: 1000,
+        ease: 'linear',
+        delay: 500,
+        loop: true,
+
+      });
+    }
+
+    // expand: 伸縮アニメーション
+    function initExpand() {
+      const container = document.getElementById('expand');
+
+      // ドット1: 同時に再生
+      const mt1 = document.createElement('div');
+      mt1.className = 'dot dot-200';
+      mt1.style.left = '175px';
+      mt1.style.top = '150px';
+      mt1.style.transform = 'scale(0.3)';
+      mt1.style.transformOrigin = 'center';
+      container.appendChild(mt1);
+
+      // ドット2: 縦方向のスケールを0.1秒ずらして再生
+      const mt2 = document.createElement('div');
+      mt2.className = 'dot dot-200';
+      mt2.style.left = '450px';
+      mt2.style.top = '150px';
+      mt2.style.transform = 'scale(0.3)';
+      mt2.style.transformOrigin = 'center';
+      container.appendChild(mt2);
+
+      // アニメーション1: 同時に再生（元の動作を忠実に再現）
+      // createjs.Tween.get(mt1, {loop: true}).wait(500).to({scaleX: 1, scaleY: 1}, 1000, createjs.Ease.elasticOut).wait(600);
+      animate(mt1, {
+        scale: [0.3, 1],
+        duration: 1000,
+        ease: 'outElastic',
+        delay: 500,
+        loop: true,
+
+      });
+
+      // アニメーション2: X方向のスケール
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({scaleX: 1}, 1000, createjs.Ease.elasticOut).wait(600);
+      animate(mt2, {
+        scaleX: [0.3, 1],
+        duration: 1000,
+        ease: 'outElastic',
+        delay: 500,
+        loop: true,
+
+      });
+
+      // アニメーション2: Y方向のスケール（0.1秒ずらし）
+      // createjs.Tween.get(mt2, {loop: true}).wait(600).to({scaleY: 1}, 1000, createjs.Ease.elasticOut).wait(500);
+      animate(mt2, {
+        scaleY: [0.3, 1],
+        duration: 1000,
+        ease: 'outElastic',
+        delay: 600,
+        loop: true,
+
+      });
+    }
+
+    // rotate: 回転アニメーション
+    function initRotate() {
+      const container = document.getElementById('rotate');
+
+      // ドット1: 横移動のみ
+      const mt1 = document.createElement('div');
+      mt1.className = 'dot dot-100';
+      mt1.style.left = '75px';
+      mt1.style.top = '125px';
+      mt1.style.opacity = '0.3';
+      container.appendChild(mt1);
+
+      // ドット2: 横移動に回転の動きを追加
+      const mt2 = document.createElement('div');
+      mt2.className = 'dot dot-100';
+      mt2.style.left = '75px';
+      mt2.style.top = '275px';
+      mt2.style.opacity = '0.3';
+      container.appendChild(mt2);
+
+      // アニメーション1: 横移動のみ（元の動作を忠実に再現）
+      // createjs.Tween.get(mt1, {loop: true}).wait(500).to({x: 545, alpha: 1}, 600, createjs.Ease.circInOut).wait(700);
+      animate(mt1, {
+        opacity: [0.3, 1],
+        x: [0, 470],
+        duration: 600,
+        ease: 'inOutCirc',
+        delay: 500,
+        loop: true,
+
+      });
+
+      // アニメーション2: 横移動
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({x: 545, alpha: 1}, 600, createjs.Ease.circInOut).wait(700);
+      animate(mt2, {
+        opacity: [0.3, 1],
+        x: [0, 470],
+        duration: 600,
+        ease: 'inOutCirc',
+        delay: 500,
+        loop: true,
+
+      });
+
+      // アニメーション2: 回転の動き（元の複雑な回転を忠実に再現）
+      // createjs.Tween.get(mt2, {loop: true}).wait(200)
+      //   .to({rotation: -30}, 400, createjs.Ease.circOut)
+      //   .to({rotation: 10}, 600, createjs.Ease.circInOut)
+      //   .to({rotation: 0}, 300, createjs.Ease.getBackOut(4))
+      //   .wait(300);
+      animate(mt2, {
+        keyframes: [
+          {rotate: 0},
+          {rotate: -30, duration: 400, easing: 'outCirc'},
+          {rotate: 10, duration: 600, easing: 'inOutCirc'},
+          {rotate: 0, duration: 300, easing: 'outBack'}
+        ],
+        delay: 200,
+        loop: true
+      });
+    }
+
+    // drop: 落下アニメーション
+    function initDrop() {
+      const container = document.getElementById('drop');
+
+      // ドット1: 落ちて跳ねる動きのみ
+      const mt1 = document.createElement('div');
+      mt1.className = 'dot dot-100';
+      mt1.style.left = '170px';
+      mt1.style.top = '-100px';
+      container.appendChild(mt1);
+
+      // ドット2: 落ちて跳ねる動きに伸縮の動きを追加
+      const mt2 = document.createElement('div');
+      mt2.className = 'dot dot-100';
+      mt2.style.left = '420px';
+      mt2.style.top = '-100px';
+      container.appendChild(mt2);
+
+      // アニメーション1: 落ちて跳ねる動きのみ（元の動作を忠実に再現）
+      // createjs.Tween.get(mt1, {loop: true}).wait(500).to({y: 300}, 1000, createjs.Ease.bounceOut).wait(500);
+      animate(mt1, {
+        y: [-100, 400],
+        duration: 1000,
+        ease: 'outBounce',
+        delay: 500,
+        loop: true,
+      });
+
+      const tl = createTimeline()
+      // アニメーション2: 落ちて跳ねる動き
+      // createjs.Tween.get(mt2, {loop: true}).wait(500).to({y: 300}, 1000, createjs.Ease.bounceOut).wait(500);
+      tl.add(mt2, {
+        y: [-100, 400],
+        duration: 1000,
+        ease: 'outBounce',
+        // loop: true,
+      }, 0);
+
+      // アニメーション2: 伸縮の動き（元の動作を忠実に再現）
+      // createjs.Tween.get(mt2, {loop: true}).wait(800).to({scaleX: 1, scaleY: 1}, 300, createjs.Ease.getBackOut(4)).wait(900);
+      tl.add(mt2, {
+        scaleX: [0.2, 1],
+        scaleY: [2, 1],
+        duration: 300,
+        ease: 'outBack(4)',
+      }, 300 );
+    }
+
+    // 初期化
+    document.addEventListener('DOMContentLoaded', function() {
+      initMove01();
+      initMove02();
+      initMove03();
+      initExpand();
+      initRotate();
+      initDrop();
+    });
+  </script>
 </head>
 <body>
   <div id="root">
-
-    <canvas id="move_01" width="720" height="405"></canvas>
-    <script>
-      (function(){
-        var stage = new createjs.Stage("move_01");
-        var container = new createjs.Container();
-        container.x = container.y = 50;
-        stage.addChild(container);
-
-        var mt1 = new createjs.Bitmap("images/mitarashi_100.png");
-        var mt2 = new createjs.Bitmap("images/mitarashi_100.png");
-        mt1.alpha = 0.3;
-        container.addChild(mt1);
-        container.addChild(mt2);
-
-        // 同じイージングで変化させる場合
-        createjs.Tween.get(mt1, {loop: true}).wait(500).to({x: 520, y: 200}, 1000, createjs.Ease.quartInOut).wait(500);
-
-        // Y座標だけイージングをbackOutに変更した場合
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({x: 520}, 1000, createjs.Ease.quartInOut).wait(500);
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({y: 200}, 1000, createjs.Ease.backOut).wait(500);
-
-        createjs.Ticker.setFPS(60);
-        createjs.Ticker.addEventListener("tick", function(){
-          stage.update();
-        });
-      })();
-    </script>
-
-    <canvas id="move_02" width="720" height="405"></canvas>
-    <script>
-      (function(){
-        var stage = new createjs.Stage("move_02");
-        var container = new createjs.Container();
-        container.x = container.y = 50;
-        stage.addChild(container);
-
-        var mt1 = new createjs.Bitmap("images/mitarashi_400.png");
-        var mt2 = new createjs.Bitmap("images/mitarashi_400.png");
-        mt1.alpha = 0.3;
-        mt1.x = mt1.y = 20;
-        mt2.x = mt2.y = 20;
-        mt1.regX = mt1.regY = 200;
-        mt2.regX = mt2.regY = 200;
-        mt1.scaleX = mt1.scaleY = 0.1;
-        mt2.scaleX = mt2.scaleY = 0.1;
-        container.addChild(mt1);
-        container.addChild(mt2);
-
-        // 同じイージングで変化させる場合
-        createjs.Tween.get(mt1, {loop: true}).wait(500).to({x: 310, y: 150, scaleX: 1, scaleY: 1}, 1000, createjs.Ease.quartInOut).wait(500);
-
-        // 拡大のトゥイーンを追加した場合
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({x: 310}, 1000, createjs.Ease.quartInOut).wait(500);
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({y: 150}, 1000, createjs.Ease.backOut).wait(500);
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({scaleX: 1, scaleY: 1}, 1000, createjs.Ease.quartInOut).wait(500);
-
-        createjs.Ticker.setFPS(60);
-        createjs.Ticker.addEventListener("tick", function(){
-          stage.update();
-        });
-      })();
-    </script>
-
-    <canvas id="move_03" width="720" height="405"></canvas>
-    <script>
-      (function(){
-        var stage = new createjs.Stage("move_03");
-        var container = new createjs.Container();
-        container.x = container.y = 50;
-        stage.addChild(container);
-
-        var mt1 = new createjs.Bitmap("images/mitarashi_100.png");
-        var mt2 = new createjs.Bitmap("images/mitarashi_100.png");
-        mt1.alpha = 0.3;
-        container.addChild(mt1);
-        container.addChild(mt2);
-
-        // 同じイージングで変化させる場合
-        createjs.Tween.get(mt1, {loop: true}).wait(500).to({x: 520, y: 200}, 1000, createjs.Ease.quartInOut).wait(500);
-
-        // Y座標だけイージングをlinearに変更した場合
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({x: 520}, 1000, createjs.Ease.quartInOut).wait(500);
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({y: 200}, 1000, createjs.Ease.linear).wait(500);
-
-        createjs.Ticker.setFPS(60);
-        createjs.Ticker.addEventListener("tick", function(){
-          stage.update();
-        });
-      })();
-    </script>
-
-    <canvas id="expand" width="720" height="405"></canvas>
-    <script>
-      (function(){
-        var stage = new createjs.Stage("expand");
-        var container = new createjs.Container();
-        container.x = container.y = 50;
-        stage.addChild(container);
-
-        var mt1 = new createjs.Bitmap("images/mitarashi_200.png");
-        var mt2 = new createjs.Bitmap("images/mitarashi_200.png");
-        mt1.x = 175;
-        mt1.y = 150;
-        mt2.x = 450;
-        mt2.y = 150;
-        mt1.regX = mt1.regY = 100;
-        mt2.regX = mt2.regY = 100;
-        mt1.scaleX = mt1.scaleY = 0.3;
-        mt2.scaleX = mt2.scaleY = 0.3;
-        container.addChild(mt1);
-        container.addChild(mt2);
-
-        // 同時に再生する場合
-        createjs.Tween.get(mt1, {loop: true}).wait(500).to({scaleX: 1, scaleY: 1}, 1000, createjs.Ease.elasticOut).wait(600);
-
-        // 縦方向のスケールを0.1秒ずらして再生した場合
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({scaleX: 1}, 1000, createjs.Ease.elasticOut).wait(600);
-        createjs.Tween.get(mt2, {loop: true}).wait(600).to({scaleY: 1}, 1000, createjs.Ease.elasticOut).wait(500);
-
-        createjs.Ticker.setFPS(60);
-        createjs.Ticker.addEventListener("tick", function(){
-          stage.update();
-        });
-      })();
-    </script>
-
-    <canvas id="rotate" width="720" height="405"></canvas>
-    <script>
-      (function(){
-        var stage = new createjs.Stage("rotate");
-        var container = new createjs.Container();
-        container.x = container.y = 50;
-        stage.addChild(container);
-
-        var mt1 = new createjs.Bitmap("images/mitarashi_100.png");
-        var mt2 = new createjs.Bitmap("images/mitarashi_100.png");
-        mt1.x = 75;
-        mt2.x = 75;
-        mt1.y = 125;
-        mt2.y = 275;
-        mt1.regX = 50;
-        mt1.regY = 100;
-        mt2.regX = 50;
-        mt2.regY = 100;
-        container.addChild(mt1);
-        container.addChild(mt2);
-
-        // 横移動のみの場合
-        createjs.Tween.get(mt1, {loop: true}).wait(500).to({x: 545, alpha: 1}, 600, createjs.Ease.circInOut).wait(700);
-
-        // 横移動に回転の動きを加えた場合
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({x: 545, alpha: 1}, 600, createjs.Ease.circInOut).wait(700);
-        createjs.Tween.get(mt2, {loop: true}).wait(200)
-          .to({rotation: -30}, 400, createjs.Ease.circOut)
-          .to({rotation: 10}, 600, createjs.Ease.circInOut)
-          .to({rotation: 0}, 300, createjs.Ease.getBackOut(4))
-          .wait(300);
-
-        createjs.Ticker.setFPS(60);
-        createjs.Ticker.addEventListener("tick", function(){
-          stage.update();
-        });
-      })();
-    </script>
-
-    <canvas id="drop" width="720" height="405"></canvas>
-    <script>
-      (function(){
-        var stage = new createjs.Stage("drop");
-        var container = new createjs.Container();
-        container.x = container.y = 50;
-        stage.addChild(container);
-
-        var mt1 = new createjs.Bitmap("images/mitarashi_100.png");
-        var mt2 = new createjs.Bitmap("images/mitarashi_100.png");
-        mt1.x = 170;
-        mt1.y = -100;
-        mt2.x = 420;
-        mt2.y = -100;
-        mt2.scaleX = 0.2;
-        mt2.scaleY = 2;
-        mt1.regX = 50;
-        mt1.regY = 100;
-        mt2.regX = 50;
-        mt2.regY = 100;
-        container.addChild(mt1);
-        container.addChild(mt2);
-
-        // 落ちて跳ねる動きのみの場合
-        createjs.Tween.get(mt1, {loop: true}).wait(500).to({y: 300}, 1000, createjs.Ease.bounceOut).wait(500);
-
-        // 落ちて跳ねる動きに、伸縮の動きを加えた場合
-        createjs.Tween.get(mt2, {loop: true}).wait(500).to({y: 300}, 1000, createjs.Ease.bounceOut).wait(500);
-        createjs.Tween.get(mt2, {loop: true}).wait(800).to({scaleX: 1, scaleY: 1}, 300, createjs.Ease.getBackOut(4)).wait(900);
-
-        createjs.Ticker.setFPS(60);
-        createjs.Ticker.addEventListener("tick", function(){
-          stage.update();
-        });
-      })();
-    </script>
+    <div id="move_01" class="demo-container"></div>
+    <div id="move_02" class="demo-container"></div>
+    <div id="move_03" class="demo-container"></div>
+    <div id="expand" class="demo-container"></div>
+    <div id="rotate" class="demo-container"></div>
+    <div id="drop" class="demo-container"></div>
   </div>
-  
+
   <script>
-    //リサイズ処理
-    function resize() {
-      var root = document.getElementById("root");
-      var scale = Math.min(window.innerWidth / 720, 1);
-      root.style.transform = "scale(" + scale + ")";
-      root.style.webkitTransform = "scale(" + scale + ")";
-      root.style.MozTransform = "scale(" + scale + ")";
-      root.style.height = root.clientHeight;
-    }
-    window.onresize = resize;
-    resize();
-    
+
     // ハッシュで表示を切り替える
-    var canvas;
-    var hash = location.hash;
-    
+    let demoContainer;
+    const hash = location.hash;
+
     if (hash.length) {
-      canvas = document.getElementById(hash.substr(1, hash.length));
-      canvas.classList.add("visible");
-      canvas.style.margin = "0";
+      demoContainer = document.getElementById(hash.substr(1, hash.length));
+      demoContainer.classList.add("visible");
+      demoContainer.style.margin = "0";
     }
     else {
-      var canvases = document.getElementsByTagName("canvas");
-      for (canvas of canvases) {
-        canvas.classList.add("visible");
+      const containers = document.getElementsByClassName("demo-container");
+      for (demoContainer of containers) {
+        demoContainer.classList.add("visible");
       }
     }
   </script>
