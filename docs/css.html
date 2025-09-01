@@ -145,16 +145,19 @@
               --ty-to: 200px;
               --s-from: 0.1;
               --s-to: 1;
-            }
-            .dot:nth-child(1) {
-              animation: move-tx 2s var(--ease-quart-out) infinite,
-                move-ty 2s var(--ease-quart-out) infinite,
-                scale 2s var(--ease-quart-out) infinite;
-            }
-            .dot:nth-child(2) {
-              animation: move-tx 2s var(--ease-quart-out) infinite,
-                move-ty 2s var(--ease-back-out) infinite,
-                scale 2s var(--ease-quart-out) infinite;
+              &:nth-child(1) {
+                animation:
+                  move-tx 2s var(--ease-quart-out) infinite,
+                  move-ty 2s var(--ease-quart-out) infinite,
+                  scale 2s var(--ease-quart-out) infinite;
+              }
+              &:nth-child(2) {
+                animation:
+                  move-tx 2s var(--ease-quart-out) infinite,
+                  /* 垂直方向の動きだけ異なるイージングに */
+                  move-ty 2s var(--ease-back-out) infinite,
+                  scale 2s var(--ease-quart-out) infinite;
+              }
             }
           }
         </style>
@@ -170,14 +173,18 @@
               --ty-from: 100px;
               --tx-to: 600px;
               --ty-to: 250px;
-            }
-            .dot:nth-child(1) {
-              animation: move-tx 1.75s var(--ease-quart-out) infinite,
-                move-ty 1.75s var(--ease-quart-out) infinite;
-            }
-            .dot:nth-child(2) {
-              animation: move-tx 1.75s var(--ease-quart-out) infinite,
-                move-ty 1.75s linear infinite;
+
+              &:nth-child(1) {
+                animation:
+                  move-tx 1.75s var(--ease-quart-out) infinite,
+                  move-ty 1.75s var(--ease-quart-out) infinite;
+              }
+              &:nth-child(2) {
+                animation:
+                  move-tx 1.75s var(--ease-quart-out) infinite,
+                  /* あえてリニアに */
+                  move-ty 1.75s linear infinite;
+              }
             }
           }
         </style>
@@ -269,15 +276,7 @@
         <p>横移動に、回転の動作を加える</p>
         <style>
           @scope {
-            @keyframes move-tx-rot {
-              0% {
-                --tx: var(--tx-from);
-              }
-              100% {
-                --tx: var(--tx-to);
-              }
-            }
-            @keyframes rotate-seq-1900 {
+            @keyframes rotate-seq {
               0% {
                 --angle: 0deg;
               }
@@ -294,23 +293,23 @@
                 --angle: 0deg;
               }
             }
-            .dot:nth-child(1) {
-              --tx-from: 100px;
-              --tx-to: 600px;
-              --ty: 125px;
-            }
-            .dot:nth-child(2) {
-              --tx-from: 100px;
-              --tx-to: 600px;
-              --ty: 275px;
-            }
-            .dot:nth-child(1) {
-              animation: move-tx-rot 1.9s cubic-bezier(0.87, 0, 0.13, 1)
-                infinite;
-            }
-            .dot:nth-child(2) {
-              animation: rotate-seq-1900 1.9s infinite,
-                move-tx-rot 1.9s cubic-bezier(0.87, 0, 0.13, 1) infinite;
+            .dot {
+              &:nth-child(1) {
+                --tx-from: 100px;
+                --tx-to: 600px;
+                --ty: 125px;
+                animation:
+                  move-tx 2.0s cubic-bezier(0.87, 0, 0.13, 1) infinite;
+              }
+              &:nth-child(2) {
+                --tx-from: 100px;
+                --tx-to: 600px;
+                --ty: 275px;
+                animation:
+                  /* 回転の予備動作を含める */
+                  rotate-seq 2.0s infinite,
+                  move-tx 2.0s cubic-bezier(0.87, 0, 0.13, 1) infinite;
+              }
             }
           }
         </style>
