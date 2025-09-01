@@ -11,24 +11,28 @@
         inherits: false;
         initial-value: 0px;
       }
+
       /* Y座標のモーション管理用変数 */
       @property --ty {
         syntax: "<length>";
         inherits: false;
         initial-value: 0px;
       }
+
       /* 水平方向のスケールのモーション管理用変数 */
       @property --sx {
         syntax: "<number>";
         inherits: false;
         initial-value: 1;
       }
+
       /* 垂直方向のスケールのモーション管理用変数 */
       @property --sy {
         syntax: "<number>";
         inherits: false;
         initial-value: 1;
       }
+
       /* 回転のモーション管理用変数 */
       @property --angle {
         syntax: "<angle>";
@@ -47,6 +51,7 @@
         transform: translate(var(--tx), var(--ty)) rotate(var(--angle))
           scaleX(var(--sx)) scaleY(var(--sy));
       }
+
       .dotEx {
         transform: translate(var(--tx), var(--ty)) rotate(var(--angle))
           scaleX(var(--sx));
@@ -60,6 +65,7 @@
           --tx: var(--tx-to);
         }
       }
+
       @keyframes move-ty {
         0% {
           --ty: var(--ty-from);
@@ -68,6 +74,7 @@
           --ty: var(--ty-to);
         }
       }
+
       @keyframes scale {
         0% {
           --sx: var(--s-from);
@@ -78,6 +85,7 @@
           --sy: var(--s-to);
         }
       }
+
       @keyframes scaleX {
         0% {
           --sx: var(--sx-from);
@@ -86,6 +94,7 @@
           --sx: var(--sx-to);
         }
       }
+
       @keyframes scaleY {
         0% {
           --sy: var(--sy-from);
@@ -95,16 +104,7 @@
         }
       }
     </style>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const containers = document.querySelectorAll(".demo-container");
-        const id = location.hash.slice(1);
-
-        containers.forEach((element) => {
-          element.hidden = id ? element.id !== id : false;
-        });
-      });
-    </script>
+    <script src="adjust.js"></script>
   </head>
   <body>
     <div id="root">

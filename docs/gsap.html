@@ -247,13 +247,6 @@
 
       // 初期化
       document.addEventListener("DOMContentLoaded", () => {
-        const containers = document.querySelectorAll(".demo-container");
-        const id = location.hash.slice(1);
-
-        containers.forEach((element) => {
-          element.hidden = id ? element.id !== id : false;
-        });
-
         initMove01();
         initMove02();
         initMove03();
@@ -262,6 +255,7 @@
         initDrop();
       });
     </script>
+    <script src="adjust.js"></script>
   </head>
   <body>
     <div id="root">
@@ -297,6 +291,6 @@
       </div>
     </div>
 
-    <script></script>
+
   </body>
 </html>

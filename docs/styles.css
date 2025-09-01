@@ -7,15 +7,22 @@ body {
   font-family: sans-serif;
   background: #222;
   color: white;
+
+  &.single {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
 }
 
 #root {
   margin: auto;
   width: 720px;
+  display: grid;
+  gap: 32px;
 }
 
 .demo-container {
-  margin: 50px 0;
   background-color: black;
   position: relative;
   width: 720px;
