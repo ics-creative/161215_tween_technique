@@ -247,20 +247,12 @@
 
       // 初期化
       document.addEventListener("DOMContentLoaded", () => {
-        // ハッシュで表示を切り替える
-        const hash = location.hash;
+        const containers = document.querySelectorAll(".demo-container");
+        const id = location.hash.slice(1);
 
-        if (hash.length) {
-          const demoContainer = document.getElementById(
-            hash.substr(1, hash.length)
-          );
-          demoContainer.hidden = false;
-        } else {
-          const containers = document.querySelectorAll(".demo-container");
-          for (const element of containers) {
-            element.hidden = false;
-          }
-        }
+        containers.forEach((element) => {
+          element.hidden = id ? element.id !== id : false;
+        });
 
         initMove01();
         initMove02();
@@ -273,32 +265,32 @@
   </head>
   <body>
     <div id="root">
-      <div id="move_01" class="demo-container" hidden>
+      <div id="move_01" class="demo-container">
         <div class="dot dot-100 ghost"></div>
         <div class="dot dot-100"></div>
         <p>水平と垂直の移動を、異なるイージングにして凝った感を</p>
       </div>
-      <div id="move_02" class="demo-container" hidden>
+      <div id="move_02" class="demo-container">
         <div class="dot dot-200 ghost"></div>
         <div class="dot dot-200"></div>
         <p>垂直移動を異なるイージングにして、奥行き感をだす</p>
       </div>
-      <div id="move_03" class="demo-container" hidden>
+      <div id="move_03" class="demo-container">
         <div class="dot dot-100 ghost"></div>
         <div class="dot dot-100"></div>
         <p>垂直移動を異なるイージングにして、ジグザグの動きに</p>
       </div>
-      <div id="expand" class="demo-container" hidden>
+      <div id="expand" class="demo-container">
         <div class="dot dot-200"></div>
         <div class="dot dot-200"></div>
         <p>拡大時に、垂直と水平のタイミングをずらす</p>
       </div>
-      <div id="rotate" class="demo-container" hidden>
+      <div id="rotate" class="demo-container">
         <div class="dot dot-100 rotate"></div>
         <div class="dot dot-100 rotate"></div>
         <p>横移動に、回転の動作を加える</p>
       </div>
-      <div id="drop" class="demo-container" hidden>
+      <div id="drop" class="demo-container">
         <div class="dot dot-100"></div>
         <div class="dot dot-100"></div>
         <p>落ちて跳ねるときに、伸縮の動作を加える</p>
