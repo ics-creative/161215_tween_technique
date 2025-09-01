@@ -12,13 +12,32 @@
       @property --rot { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 
       :root {
-        --ease-quart: cubic-bezier(0.77, 0, 0.175, 1); /* inOutQuart 近似 */
+        --ease-quart: cubic-bezier(0.77, 0, 0.175, 1); /* power4.inOut 近似 */
         --ease-expo-inout: cubic-bezier(0.87, 0, 0.13, 1); /* expo.inOut 近似 */
-        --ease-elastic-out-linear: linear(0, 1.35 48%, 0.92 70%, 1.08 85%, 1 100%); /* elastic.out 近似(改善) */
-        --ease-back-out-4-linear: linear(0, 1.25 58%, 0.98 85%, 1 100%); /* back.out(4) 近似(改善) */
+        /* 注意: linear()利用不可な環境向けに cubic-bezier 近似に変更 */
+        --ease-elastic-out-linear: linear( 0, 0.2178 2.1%, 1.1144 8.49%, 1.2959 10.7%, 1.3463 11.81%, 1.3705 12.94%, 1.3726, 1.3643 14.48%, 1.3151 16.2%, 1.0317 21.81%, 0.941 24.01%, 0.8912 25.91%, 0.8694 27.84%, 0.8698 29.21%, 0.8824 30.71%, 1.0122 38.33%, 1.0357, 1.046 42.71%, 1.0416 45.7%, 0.9961 53.26%, 0.9839 57.54%, 0.9853 60.71%, 1.0012 68.14%, 1.0056 72.24%, 0.9981 86.66%, 1 ); /* elastic.out 相当 */
+        --ease-back-out-4-linear: cubic-bezier(0.175, 0.885, 0.32, 1.4); /* back.out(4) 近似 */
+        --ease-bounce-out-linear: linear(
+          /* Start to 1st bounce */
+                0, 0.004, 0.016, 0.035, 0.063 9.1%, 0.141, 0.25, 0.391, 0.563, 0.765, 1,
+                  /* 1st to 2nd bounce */
+                0.891, 0.813 45.5%, 0.785, 0.766, 0.754, 0.75, 0.754, 0.766, 0.785, 0.813 63.6%, 0.891, 1 72.7%,
+                  /* 2nd to 3rd bounce */
+                0.973, 0.953, 0.941, 0.938, 0.941, 0.953, 0.973, 1,
+                  /* 3rd bounce to end */
+                0.988, 0.984, 0.988, 1
+        );
       }
 
       .dot { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scaleX(var(--sx)) scaleY(var(--sy)); }
+      /* split wrappers to control X and Y scales independently (outer X, inner Y) */
+      .dotEx { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scaleX(var(--sx)); }
+
+      .dotExInnerY { transform: scaleY(var(--sy)); }
+      /* expand: when using wrappers, prevent inner .dot from applying base transforms */
+      #expand .dotEx .dot { transform: none; }
+      /* hide outer placeholder circle in nested expand to avoid double ring */
+      #expand > .dot::before { display: none; }
 
       /* 1.5s 動作 + 0.5s ホールド = 総時間 2.0s */
       @keyframes move-tx-1500 { 0% { --tx: var(--tx-from); } 66.666% { --tx: var(--tx-to); } 100% { --tx: var(--tx-to); } }
@@ -26,20 +45,19 @@
       @keyframes move-tx-2000 { 0% { --tx: var(--tx-from); } 75% { --tx: var(--tx-to); } 100% { --tx: var(--tx-to); } }
       @keyframes move-ty-2000 { 0% { --ty: var(--ty-from); } 75% { --ty: var(--ty-to); } 100% { --ty: var(--ty-to); } }
       @keyframes scale-2000   { 0% { --sx: var(--s-from); --sy: var(--s-from); } 75% { --sx: var(--s-to); --sy: var(--s-to); } 100% { --sx: var(--s-to); --sy: var(--s-to); } }
-      @keyframes scalex-2000  { 0% { --sx: var(--sx-from); } 75% { --sx: var(--sx-to); } 100% { --sx: var(--sx-to); } }
-      @keyframes scaley-2000  { 0% { --sy: var(--sy-from); } 75% { --sy: var(--sy-to); } 100% { --sy: var(--sy-to); } }
+      @keyframes scalex-2000  { 0% { --sx: var(--sx-from); } 100% { --sx: var(--sx-to); } }
+      @keyframes scaley-2000  { 0% { --sy: var(--sy-from); } 100% { --sy: var(--sy-to); } }
+      /* scale 0.45s active within total 2.0s timeline (22.5%) */
+      @keyframes scalex-0450-2000 { 0% { --sx: var(--sx-from); } 22.5% { --sx: var(--sx-to); } 100% { --sx: var(--sx-to); } }
+      @keyframes scaley-0450-2000 { 0% { --sy: var(--sy-from); } 22.5% { --sy: var(--sy-to); } 100% { --sy: var(--sy-to); } }
 
       /* 1.5s 動作 + 0.25s ホールド = 総時間 1.75s */
       @keyframes move-tx-1750 { 0% { --tx: var(--tx-from); } 85.714% { --tx: var(--tx-to); } 100% { --tx: var(--tx-to); } }
       @keyframes move-ty-1750 { 0% { --ty: var(--ty-from); } 85.714% { --ty: var(--ty-to); } 100% { --ty: var(--ty-to); } }
 
-      /* drop の簡易バウンス（総時間 2.0s）*/
+      /* drop （総時間 2.0s）*/
       @keyframes bounce-ty-2000 {
         0% { --ty: var(--ty-from); }
-        60% { --ty: var(--ty-to); }
-        75% { --ty: calc(var(--ty-to) - 35px); }
-        85% { --ty: var(--ty-to); }
-        92% { --ty: calc(var(--ty-to) - 15px); }
         100% { --ty: var(--ty-to); }
       }
 
@@ -77,19 +95,18 @@
         .dot:nth-child(2) { animation: move-tx-1750 1.75s var(--ease-quart) infinite, move-ty-1750 1.75s linear infinite; }
       }
 
-      /* expand */
+      /* expand (GSAP: duration 1.5s, repeatDelay 0.5s, dot2 Y delayed 0.1s) */
       #expand {
-        .dot:nth-child(1) { --tx: 200px; --ty: 200px; --sx-from: 0.3; --sy-from: 0.3; --sx-to: 1; --sy-to: 1; }
-        .dot:nth-child(2) { --tx: 500px; --ty: 200px; --sx-from: 0.3; --sy-from: 0.3; --sx-to: 1; --sy-to: 1; }
-        .dot:nth-child(1) {
-          animation: scalex-2000 2s infinite, scaley-2000 2s infinite;
-          animation-timing-function: var(--ease-elastic-out-linear), var(--ease-elastic-out-linear);
-        }
-        .dot:nth-child(2) {
-          animation: scalex-2000 2s infinite, scaley-2000 2s infinite;
-          animation-delay: 0s, 0.1s;
-          animation-timing-function: var(--ease-elastic-out-linear), var(--ease-elastic-out-linear);
-        }
+        .dotEx { --sx-from: 0.3; --sy-from: 0.3; --sx-to: 1; --sy-to: 1;
+        position: absolute}
+        /* outer wrapper animates scaleX; inner Y wrapper animates scaleY */
+        .dotEx {
+          animation: scalex-2000 2s var(--ease-elastic-out-linear) infinite; }
+        .dotEx .dotExInnerY {
+          animation: scaley-2000 2s var(--ease-elastic-out-linear) infinite; }
+        .dotEx:nth-child(1) { left: 200px; top: 200px; }
+        .dotEx:nth-child(2) { left: 500px; top: 200px; }
+        .dotEx:nth-child(2) .dotExInnerY { animation-delay: 0.1s; }
       }
 
       /* rotate */
@@ -100,15 +117,24 @@
         .dot:nth-child(2) { animation: rotate-seq-1900 1.9s ease-in-out infinite, move-tx-rot-1900 1.9s var(--ease-expo-inout) infinite; }
       }
 
-      /* drop */
+      /* drop (GSAP: y 1.5s bounce.out, scale 0.45s back.out(4) after 0.45s delay) */
       #drop {
-        .dot:nth-child(1) { --tx: 220px; --ty-from: -100px; --ty-to: 275px; animation: bounce-ty-2000 2s ease-out infinite; }
-        .dot:nth-child(2) {
-          --tx: 500px; --ty-from: -100px; --ty-to: 275px; --sx-from: 0.2; --sy-from: 2; --sx-to: 1; --sy-to: 1; transform-origin: center 100%;
-          animation: bounce-ty-2000 2s ease-out infinite, scalex-2000 2s infinite, scaley-2000 2s infinite;
-          animation-delay: 0s, 0.45s, 0.45s;
-          animation-timing-function: ease-out, var(--ease-back-out-4-linear), var(--ease-back-out-4-linear);
-        }
+        .dot:nth-child(1) { --ty-from: -100px; --ty-to: 275px; animation: bounce-ty-2000 2s var(--ease-bounce-out-linear) infinite; }
+        /* second uses wrapper: y on outer, scaleX on outer, scaleY on inner */
+        .dotEx { --ty-from: -100px; --ty-to: 275px; --sx-from: 0.2; --sy-from: 2; --sx-to: 1; --sy-to: 1; transform-origin: center 100%; }
+        .dotEx {
+            animation: bounce-ty-2000 2s var(--ease-bounce-out-linear) infinite,
+        scalex-0450-2000 2s var(--ease-back-out-4-linear) infinite; animation-delay: 0s, 0.45s; }
+        .dotEx .dotExInnerY {
+            transform-origin: center 100%;
+          --sy: var(--sy-from);
+          animation: scaley-0450-2000 2s var(--ease-back-out-4-linear) infinite;
+          animation-delay: 0.45s; }
+        /* prevent double transforms for inner .dot */
+        .dotEx .dot { transform: none;}
+
+        .dotEx:nth-child(1) { left:200px; position: absolute; }
+        .dotEx:nth-child(2) { left:500px; position: absolute; }
       }
     </style>
     <script>
@@ -142,8 +168,20 @@
         <p>垂直移動を異なるイージングにして、ジグザグの動きに</p>
       </div>
       <div id="expand" class="demo-container" hidden>
-        <div class="dot dot-200"></div>
-        <div class="dot dot-200"></div>
+        <div class="dotEx">
+          <div class="dotExInnerX">
+            <div class="dotExInnerY">
+              <div class="dot dot-200"></div>
+            </div>
+          </div>
+        </div>
+        <div class="dotEx">
+          <div class="dotExInnerX">
+            <div class="dotExInnerY">
+              <div class="dot dot-200"></div>
+            </div>
+          </div>
+        </div>
         <p>拡大時に、垂直と水平のタイミングをずらす</p>
       </div>
       <div id="rotate" class="demo-container" hidden>
@@ -152,8 +190,21 @@
         <p>横移動に、回転の動作を加える</p>
       </div>
       <div id="drop" class="demo-container" hidden>
-        <div class="dot dot-100"></div>
-        <div class="dot dot-100"></div>
+        <div class="dotEx">
+          <div class="dotExInnerX">
+            <div class="dotExInnerY">
+              <div class="dot dot-100"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dotEx">
+          <div class="dotExInnerX">
+            <div class="dotExInnerY">
+              <div class="dot dot-100"></div>
+            </div>
+          </div>
+        </div>
         <p>落ちて跳ねるときに、伸縮の動作を加える</p>
       </div>
     </div>
